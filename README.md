@@ -1,5 +1,9 @@
-# example
+# How to use it
 
-node get_transcript.js Cgt1X3ExMlpRSU5JaxISQ2dOaGMzSVNBbVZ1R2dBJTNEGAEqM2VuZ2FnZW1lbnQtcGFuZWwtc2VhcmNoYWJsZS10cmFuc2NyaXB0LXNlYXJjaC1wYW5lbDABOAFAAQ
+replace link or video id.
 
-> replace command arg with your video request transcript params
+`node index.js https://www.youtube.com/watch?v=s3Kzt5_Jixg&t=512s&ab_channel=NationalGeographic`
+
+or
+
+`node index.js s3Kzt5_Jixg`

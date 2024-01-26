@@ -4,7 +4,6 @@ try {
 } catch (err) {
   console.error('https support is disabled!');
 }
-const map = require('./map.json');
 
 const fs = require('fs');
 
@@ -129,15 +128,40 @@ function getNested(obj, args) {
   return args.reduce((obj, level) => obj && obj[level], obj);
 }
 
-function main() {
-  const input = process.argv.slice(2)[0];
+function fetchYTPageBody(id) {
+  const url = `https://www.youtube.com/watch?v=${id}`;
+  return new Promise((resolve) => {
+    https
+      .get(url, (res) => {
+        let str = '';
+        res.on('data', (d) => {
+          str += d;
+        });
+        res.on('end', () => {
+          const targetStr =
+            str.split('"getTranscriptEndpoint":')[1]?.split('}')[0] + '}';
+          const targetJson = JSON.parse(targetStr);
+          // console.log(targetJson.params);
+          resolve(targetJson.params);
+        });
+      })
+      .on('error', (e) => {
+        console.error(e);
+      });
+  });
+}
+
+async function main() {
+  const arg = process.argv.slice(2)[0];
+  const isLink = arg.includes('https://www.youtube.com/watch?v');
+  const videoId = isLink ? new URL(arg).searchParams.get('v') : arg;
+  const params = await fetchYTPageBody(videoId);
   try {
-    const id = map[input];
-    const data = fs.readFileSync(id + '.txt', { encoding: 'utf-8' });
+    const data = fs.readFileSync(videoId + '.txt', { encoding: 'utf-8' });
     console.log('cache exists:', data.slice(0, 100));
     return;
   } catch (error) {}
-  const postData = getPostData(input);
+  const postData = getPostData(params);
   const req = https.request(options, function (res) {
     const chunks = [];
 
@@ -149,9 +173,7 @@ function main() {
       const body = Buffer.concat(chunks);
       const res = body.toString();
       // console.log(res)
-      const id = logScript(res);
-      map[input] = id;
-      fs.writeFileSync('map.json', JSON.stringify(map, null, 2));
+      logScript(res);
     });
 
     res.on('error', function (error) {
