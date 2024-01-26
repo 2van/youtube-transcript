@@ -1,0 +1,5 @@
+# example
+
+node get_transcript.js Cgt1X3ExMlpRSU5JaxISQ2dOaGMzSVNBbVZ1R2dBJTNEGAEqM2VuZ2FnZW1lbnQtcGFuZWwtc2VhcmNoYWJsZS10cmFuc2NyaXB0LXNlYXJjaC1wYW5lbDABOAFAAQ
+
+> replace command arg with your video request transcript params
